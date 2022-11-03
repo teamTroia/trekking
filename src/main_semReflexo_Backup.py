@@ -3,6 +3,7 @@ import cv2
 import random as rng
 import RPi.GPIO as GPIO
 import time
+import trekking
 
 # desliga o LED
 def offLED(pino):
@@ -10,19 +11,22 @@ def offLED(pino):
     GPIO.output(pino, GPIO.LOW)
 
 # se cone na esquerda
-def coneESQ(eixoX):
+def coneESQ():
     print('O cone esta na esquerda')
-    ligaLED(eixoX)
+    trekking.enablePKS1(15, -1)
+    trekking.enablePKS2(12, 1)
 
 # se cone na direita
-def coneDIR(eixoX):
+def coneDIR():
     print('O cone esta na direita')
-    ligaLED(eixoX)
+    trekking.enablePKS1(12, -1)
+    trekking.enablePKS2(15, 1)
 
 # se cone em frente
-def coneFRE(eixoX):
+def coneFRE():
     print('O cone esta em frente')
-    ligaLED(eixoX)
+    trekking.enablePKS1(15, -1)
+    trekking.enablePKS2(15, 1)
 
 # liga os LED
 def ligaLED(eixoX):
@@ -32,11 +36,12 @@ def ligaLED(eixoX):
 # define onde o cone está
 def coneCaminho(eixoX):
     if eixoX > 340:
-        coneDIR(21)
+        coneDIR()
     elif eixoX < 300:
-        coneESQ(18)
+        coneESQ()
     else:
-        coneFRE(20)
+        coneFRE()
+    
     print(eixoX)
 
 # read until video is completed
@@ -72,6 +77,7 @@ def procuraCONE(frame):
 
     # detect all edges witin the image
     edges_img = cv2.Canny(smoothed_img, 100, 200)
+    #cv2.imshow('Frame', edges_img)
     contours, hierarchy = cv2.findContours(edges_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # set parameters for writing text and drawing lines
@@ -87,7 +93,7 @@ def procuraCONE(frame):
         # if the contour is a triangle, draw a bounding box around it and tag a traffic_cone label to it
         if len(approx) == 3:
             x, y, w, h = cv2.boundingRect(approx)
-            rect = (x, w, y, h)
+            rect = (x, y, w, h)
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
             coneCaminho(x)
             bottomLeftCornerOfText = (x, y)
@@ -100,18 +106,11 @@ def procuraCONE(frame):
 
     # display the resulting frame
     cv2.imshow('Frame',frame)
-
 # closes all the frames
-cv2.destroyAllWindows()
 
 # func main
 def main():
     cap = cv2.VideoCapture(0)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    GPIO.setup(18, GPIO.OUT)
-    GPIO.setup(21, GPIO.OUT)
-    GPIO.setup(20, GPIO.OUT)
     
     # check if camera opened successfully
     if (cap.isOpened()== False): 
@@ -135,6 +134,7 @@ def main():
 
     # when everything done, release the video capture object
     cap.release()
+    cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     main()

@@ -27,10 +27,10 @@ gpio.setup(IN1_PKS2,gpio.OUT)
 gpio.setup(IN2_PKS2,gpio.OUT)
 
 
-pwmSD1_PKS1 = gpio.PWM(SD1_PKS1, 8000)
-pwmSD2_PKS1 = gpio.PWM(SD2_PKS1, 8000)
-pwmSD1_PKS2 = gpio.PWM(SD1_PKS2, 8000)
-pwmSD2_PKS2 = gpio.PWM(SD2_PKS2, 8000)
+pwmSD1_PKS1 = gpio.PWM(SD1_PKS1, 500)
+pwmSD2_PKS1 = gpio.PWM(SD2_PKS1, 500)
+pwmSD1_PKS2 = gpio.PWM(SD1_PKS2, 500)
+pwmSD2_PKS2 = gpio.PWM(SD2_PKS2, 500)
 
 pwmSD1_PKS1.start(0)
 pwmSD2_PKS1.start(0)
@@ -77,11 +77,3 @@ def enablePKS2(dutyCycle, direction):
     gpio.output(IN2_PKS2, gpio.LOW)
 
 
-while(1):
-    enablePKS1(50,1)
-    enablePKS2(50,-1)
-    time.sleep(5)
-    enablePKS1(75, 1)
-    time.sleep(5)
-    enablePKS1(25, 1)
-    time.sleep(5)

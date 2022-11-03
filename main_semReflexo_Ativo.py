@@ -3,47 +3,51 @@ import cv2
 import random as rng
 import RPi.GPIO as GPIO
 import time
+import trekking
 
-# desliga o LED
-def offLED(pino):
-    time.sleep(1)
-    GPIO.output(pino, GPIO.LOW)
+# se cone na frente
+def irRETO():
+    print('To indo Reto')
+    trekking.enablePKS1(50, 1)
+    trekking.enablePKS2(50, -1)
+    
+    #while conePROXIMO() = False:
+        #if conePROXIMO() = True:
+            #pwm12.stop()
+            #pwm36.stop()
+    
+# se cone na direita
+def irDIR():
+    print('To indo Direita')
+    trekking.enablePKS1(50, 1)
+    trekking.enablePKS2(75 ,-1)
 
 # se cone na esquerda
-def coneESQ(eixoX):
-    print('O cone esta na esquerda')
-    ligaLED(eixoX)
-
-# se cone na direita
-def coneDIR(eixoX):
-    print('O cone esta na direita')
-    ligaLED(eixoX)
-
-# se cone em frente
-def coneFRE(eixoX):
-    print('O cone esta em frente')
-    ligaLED(eixoX)
-
-# liga os LED
-def ligaLED(eixoX):
-    GPIO.output(eixoX, GPIO.HIGH)
-    offLED(eixoX)
+def irESQ():
+    print('To indo Esquerda')
+    trekking.enablePKS1(75, 1)
+    trekking.enablePSK2(50, -1)
 
 # define onde o cone está
 def coneCaminho(eixoX):
     if eixoX > 340:
-        coneDIR(21)
+        while procuraCONE() > 340: 
+            irDIR()
+        #pwm36.stop()
     elif eixoX < 300:
-        coneESQ(18)
+        while procuraCONE() < 300:
+            irESQ()
+        #pwm12.stop()
     else:
-        coneFRE(20)
-    if eixoX == None:
-        print('None')
-    else:
-        print(eixoX)
+        irRETO()
+        if eixoX == None:
+            print('não tem')
+        else:
+            print(eixoX)
 
 # read until video is completed
-def procuraCONE(frame):
+def procuraCONE():
+    frame = cap.read()
     # convert the image to HSV because easier to represent color in
     # HSV as opposed to in BGR 
     hsv_img = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
@@ -69,30 +73,26 @@ def procuraCONE(frame):
     # threshed_img_smooth = cv2.erode(threshed_img, kernel, iterations = 1)
     # threshed_img_smooth = cv2.dilate(threshed_img_smooth, kernel, iterations = 1)
 
-    # smooth the image with erosion, dialation, and smooth gaussian
     smoothed_img = cv2.dilate(threshed_img, kernel, iterations = 13)
     smoothed_img = cv2.erode(smoothed_img, kernel, iterations = 13)
 
-    # detect all edges witin the image
     edges_img = cv2.Canny(smoothed_img, 100, 200)
     contours, hierarchy = cv2.findContours(edges_img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    # set parameters for writing text and drawing lines
     font = cv2.FONT_HERSHEY_SIMPLEX
     fontScale = 2
     fontColor = (0, 0, 255)
     lineType = 2
 
-    # analyze each contour and deterime if it is a triangle
+    cones = []
     for cnt in contours:
         boundingRect = cv2.boundingRect(cnt)
         approx = cv2.approxPolyDP(cnt, 0.06 * cv2.arcLength(cnt, True), True)
-        # if the contour is a triangle, draw a bounding box around it and tag a traffic_cone label to it
         if len(approx) == 3:
             x, y, w, h = cv2.boundingRect(approx)
-            rect = (x, y, w, h)
+            rect = (x, w, y, h)
+            cones.append(rect)
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 3)
-            coneCaminho(x)
             bottomLeftCornerOfText = (x, y)
             cv2.putText(frame,'traffic_cone', 
                 bottomLeftCornerOfText, 
@@ -100,9 +100,8 @@ def procuraCONE(frame):
                 fontScale,
                 fontColor,
                 lineType)
-
-    # display the resulting frame
     cv2.imshow('Frame',frame)
+    return x
 
 # closes all the frames
 cv2.destroyAllWindows()
@@ -110,11 +109,6 @@ cv2.destroyAllWindows()
 # func main
 def main():
     cap = cv2.VideoCapture(0)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    GPIO.setup(18, GPIO.OUT)
-    GPIO.setup(21, GPIO.OUT)
-    GPIO.setup(20, GPIO.OUT)
     
     # check if camera opened successfully
     if (cap.isOpened()== False): 
@@ -122,21 +116,14 @@ def main():
 
     print('iniciou')
     while(cap.isOpened()):
-
-        # capture frame-by-frame
-        ret, frame = cap.read()
+        ret = cap.read()
         if ret == True:
-            procuraCONE(frame)
-
-            # press Q on keyboard to  exit
+            eixoX = procuraCONE()
+            coneCaminho(eixoX)
             if cv2.waitKey(25) & 0xFF == ord('q'):
                 break
-
-        # break the loop
         else: 
             break
-
-    # when everything done, release the video capture object
     cap.release()
 
 if __name__ == '__main__':
