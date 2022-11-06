@@ -55,7 +55,13 @@ def main():
     if (len(cones) == 0):
         enablePKS1(0,1)
         enablePKS2(0,1)
-        
+    else:
+        maior = cones[0]
+        for cone in cones:
+            if (cone['h'] > maior['h']):
+                maior = cone
+        coneCaminho(maior['x'] + (cone['w']/2))
+                
     cap.release()
     cv2.destroyAllWindows()
 
