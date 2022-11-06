@@ -76,4 +76,8 @@ def enablePKS2(dutyCycle, direction):
     gpio.output(IN1_PKS2, gpio.LOW)
     gpio.output(IN2_PKS2, gpio.LOW)
 
+if __name__ == '__main__':
+  while(1):
+    enablePKS2(50,1)
+    enablePKS1(50,1)
 
