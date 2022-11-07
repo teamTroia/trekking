@@ -16,9 +16,9 @@ GYRO_CONSTANT = 0.017453293
 i2c = smbus.SMBus(DEVICE_BUS)
 
 
-i2c.write_byte_data(GYRO_ADDRESS, INIT_REGISTER, 0x00)
-i2c.write_byte_data(GYRO_ADDRESS, RANGE_REGISTER, RANGE_VALUE)
-i2c.write_byte_data(GYRO_ADDRESS, BAND_WIDTH_REGISTER, BAND_WIDTH_VALUE)
+i2c.write_byte_data(GYRO_ADDRESS, INIT_REGISTER, 0x00, True)
+i2c.write_byte_data(GYRO_ADDRESS, RANGE_REGISTER, RANGE_VALUE, True)
+i2c.write_byte_data(GYRO_ADDRESS, BAND_WIDTH_REGISTER, BAND_WIDTH_VALUE, True)
 
 def readAngularSpeed():
   gyro_raw_data = i2c.read_i2c_block_data(GYRO_ADDRESS, 0X43, 6)
@@ -26,9 +26,9 @@ def readAngularSpeed():
   rawY = gyro_raw_data[2] | gyro_raw_data[3]
   rawZ = gyro_raw_data[4] | gyro_raw_data[5]
   
-  gyroX = (rawX / GYRO_SCALE) * GYRO_CONSTANT
-  gyroY = (rawY / GYRO_SCALE) * GYRO_CONSTANT
-  gyroZ = (rawZ / GYRO_SCALE) * GYRO_CONSTANT
+  gyroX = (float(rawX) / GYRO_SCALE) * GYRO_CONSTANT
+  gyroY = (float(rawY) / GYRO_SCALE) * GYRO_CONSTANT
+  gyroZ = (float(rawZ) / GYRO_SCALE) * GYRO_CONSTANT
 
   return {'x': gyroX, 'y': gyroY, 'z': gyroZ}
 
