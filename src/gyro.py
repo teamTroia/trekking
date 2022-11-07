@@ -21,13 +21,16 @@ i2c.write_byte_data(GYRO_ADDRESS, RANGE_REGISTER, RANGE_VALUE)
 i2c.write_byte_data(GYRO_ADDRESS, BAND_WIDTH_REGISTER, BAND_WIDTH_VALUE)
 
 def readAngularSpeed():
-  rawXLOW = i2c.read_byte_data(GYRO_ADDRESS, 0x43)
-  rawXLHIGH = i2c.read_byte_data(GYRO_ADDRESS, 0x43)
-  rawX = rawXLOW | rawXLHIGH
-
+  gyro_raw_data = i2c.read_i2c_block_data(GYRO_ADDRESS, 0X43, 6)
+  rawX = (gyro_raw_data[0] << 8) | gyro_raw_data[1]
+  rawY = (gyro_raw_data[2] << 8) | gyro_raw_data[3]
+  rawZ = (gyro_raw_data[4] << 8) | gyro_raw_data[5]
+  
   gyroX = (float(rawX) / GYRO_SCALE) * GYRO_CONSTANT
+  gyroY = (float(rawY) / GYRO_SCALE) * GYRO_CONSTANT
+  gyroZ = (float(rawZ) / GYRO_SCALE) * GYRO_CONSTANT
 
-  return gyroX
+  return {'x': gyroX, 'y': gyroY, 'z': gyroZ}
 
 if (__name__ == '__main__'):
     while(True):
