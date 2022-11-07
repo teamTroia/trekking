@@ -56,7 +56,7 @@ def procuraCONE(cap):
       break
       
 if __name__ == '__main__':
-  cap = cv2.VideoCapture(2)
+  cap = cv2.VideoCapture(0)
   while(1):
     cones = procuraCONE(cap)
     print(cones)

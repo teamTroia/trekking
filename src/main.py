@@ -16,14 +16,14 @@ def offLED(pino):
 # se cone na esquerda
 def coneESQ():
     print('O cone esta na esquerda')
-    enablePKS1(15, -1)
-    enablePKS2(12, 1)
+    enablePKS1(5, -1)
+    enablePKS2(10, 1)
 
 # se cone na direita
 def coneDIR():
     print('O cone esta na direita')
-    enablePKS1(12, -1)
-    enablePKS2(15, 1)
+    enablePKS1(10, -1)
+    enablePKS2(5, 1)
 
 # se cone em frente
 def coneFRE():
@@ -50,18 +50,20 @@ def coneCaminho(eixoX):
 
 def main():
     cap = cv2.VideoCapture(0)
-    cones = procuraCONE(cap)
-    
-    if (len(cones) == 0):
-        enablePKS1(0,1)
-        enablePKS2(0,1)
-    else:
-        maior = cones[0]
-        for cone in cones:
-            if (cone['h'] > maior['h']):
-                maior = cone
-        coneCaminho(maior['x'] + (cone['w']/2))
-                
+    lastCone = None
+    while(1):
+        cones = procuraCONE(cap)
+        
+        if (len(cones) == 0):
+            if (lastCone != None):
+                coneCaminho(lastCone['x'] + (lastCone['w']/2))
+        else:
+            maior = cones[0]
+            for cone in cones:
+                if (cone['h'] > maior['h']):
+                    maior = cone
+            coneCaminho(maior['x'] + (maior['w']/2))
+            lastCone = maior    
     cap.release()
     cv2.destroyAllWindows()
 
