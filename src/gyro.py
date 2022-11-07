@@ -38,4 +38,4 @@ def readAngularSpeed():
 if (__name__ == '__main__'):
     while(True):
       gyro = readAngularSpeed()
-      print(gyro)
+      print(f"x: {gyro['x']:.6f}, y: {gyro['y']:.6f}, z: {gyro['z']:.6f}")
