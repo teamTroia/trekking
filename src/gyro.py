@@ -25,6 +25,10 @@ def readAngularSpeed():
   rawY = (i2c.read_byte_data(GYRO_ADDRESS, 0x45) << 8) | i2c.read_byte_data(GYRO_ADDRESS, 0x46)
   rawZ = (i2c.read_byte_data(GYRO_ADDRESS, 0x47) << 8) | i2c.read_byte_data(GYRO_ADDRESS, 0x48)
   
+  rawX = rawX if (rawX < 32768) else rawX - 65536
+  rawY = rawY if (rawY < 32768) else rawY - 65536
+  rawZ = rawZ if (rawZ < 32768) else rawZ - 65536
+  
   gyroX = float(rawX) / GYRO_SCALE
   gyroY = float(rawY) / GYRO_SCALE
   gyroZ = float(rawZ) / GYRO_SCALE
