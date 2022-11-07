@@ -1,5 +1,5 @@
 import smbus
-
+from time import sleep
 DEVICE_BUS = 1
 GYRO_ADDRESS = 0x68
 
@@ -25,7 +25,7 @@ def readAngularSpeed():
   rawX = gyro_raw_data[0] | gyro_raw_data[1]
   rawY = gyro_raw_data[2] | gyro_raw_data[3]
   rawZ = gyro_raw_data[4] | gyro_raw_data[5]
-
+  
   gyroX = (rawX / GYRO_SCALE) * GYRO_CONSTANT
   gyroY = (rawY / GYRO_SCALE) * GYRO_CONSTANT
   gyroZ = (rawZ / GYRO_SCALE) * GYRO_CONSTANT
@@ -33,6 +33,6 @@ def readAngularSpeed():
   return {'x': gyroX, 'y': gyroY, 'z': gyroZ}
 
 if (__name__ == '__main__'):
-  while(1):
-    gyro = readAngularSpeed()
-    print(gyro)
+    while(True):
+      gyro = readAngularSpeed()
+      print(gyro)
