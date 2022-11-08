@@ -60,12 +60,12 @@ def enablePKS1(dutyCycle, direction):
     gpio.output(IN2_PKS1, gpio.LOW)
 
 def enablePKS2(dutyCycle, direction):
-  if (direction == 1):
+  if (direction == -1):
     pwmSD1_PKS2.ChangeDutyCycle(dutyCycle)
     pwmSD2_PKS2.ChangeDutyCycle(100)
     gpio.output(IN1_PKS2, gpio.HIGH)
     gpio.output(IN2_PKS2, gpio.LOW)
-  elif (direction == -1):
+  elif (direction == 1):
     pwmSD2_PKS2.ChangeDutyCycle(dutyCycle)
     pwmSD1_PKS2.ChangeDutyCycle(100)
     gpio.output(IN1_PKS2, gpio.LOW)
@@ -78,6 +78,6 @@ def enablePKS2(dutyCycle, direction):
 
 if __name__ == '__main__':
   while(1):
-    enablePKS2(50,1)
-    enablePKS1(50,1)
+    enablePKS2(30,1)
+    enablePKS1(30,1)
 

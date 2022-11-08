@@ -6,6 +6,7 @@ GYRO_ADDRESS = 0x68
 INIT_REGISTER = 0x6B
 RANGE_REGISTER = 0x1B
 BAND_WIDTH_REGISTER = 0X1A
+INT_ENABLE = 0x38
 
 RANGE_VALUE = 0b00001000 #valor para 500 g/s
 BAND_WIDTH_VALUE = 0b00000100 #valor para 21Hz
@@ -14,16 +15,16 @@ GYRO_SCALE = 65.5
 GYRO_CONSTANT = 0.017453293
 
 i2c = smbus.SMBus(DEVICE_BUS)
-
+sleep(1)
 
 i2c.write_byte_data(GYRO_ADDRESS, INIT_REGISTER, 0x00)
 i2c.write_byte_data(GYRO_ADDRESS, RANGE_REGISTER, RANGE_VALUE)
 i2c.write_byte_data(GYRO_ADDRESS, BAND_WIDTH_REGISTER, BAND_WIDTH_VALUE)
-
+#i2c.write_byte_data(GYRO_ADDRESS, INT_ENABLE, 1)
 def readAngularSpeed():
+  rawZ = (i2c.read_byte_data(GYRO_ADDRESS, 0x47) << 8) | i2c.read_byte_data(GYRO_ADDRESS, 0x48)
   rawX = (i2c.read_byte_data(GYRO_ADDRESS, 0x43) << 8) | i2c.read_byte_data(GYRO_ADDRESS, 0x44)
   rawY = (i2c.read_byte_data(GYRO_ADDRESS, 0x45) << 8) | i2c.read_byte_data(GYRO_ADDRESS, 0x46)
-  rawZ = (i2c.read_byte_data(GYRO_ADDRESS, 0x47) << 8) | i2c.read_byte_data(GYRO_ADDRESS, 0x48)
   
   rawX = rawX if (rawX < 32768) else rawX - 65536
   rawY = rawY if (rawY < 32768) else rawY - 65536
