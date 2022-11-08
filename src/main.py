@@ -3,7 +3,7 @@ import random as rng
 import RPi.GPIO as GPIO
 import time
 import cv2
-from motor import enablePKS1, enablePKS2
+from control import enableMotors
 from visao import procuraCONE
 
 MARGEM_ERRO_CENTRO = 40
@@ -16,20 +16,17 @@ def offLED(pino):
 # se cone na esquerda
 def coneESQ():
     print('O cone esta na esquerda')
-    enablePKS1(5, -1)
-    enablePKS2(10, 1)
+    enableMotors(100, -0.15)
 
 # se cone na direita
 def coneDIR():
     print('O cone esta na direita')
-    enablePKS1(10, -1)
-    enablePKS2(5, 1)
+    enableMotors(100, 0.15)
 
 # se cone em frente
 def coneFRE():
     print('O cone esta em frente')
-    enablePKS1(15, -1)
-    enablePKS2(15, 1)
+    enableMotors(100, 0)
 
 # liga os LED
 def ligaLED(eixoX):
