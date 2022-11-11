@@ -6,7 +6,7 @@ import cv2
 from control import enableMotors
 from visao import procuraCONE
 
-MARGEM_ERRO_CENTRO = 40
+MARGEM_ERRO_CENTRO = 60
 
 # desliga o LED
 def offLED(pino):
@@ -16,17 +16,18 @@ def offLED(pino):
 # se cone na esquerda
 def coneESQ():
     print('O cone esta na esquerda')
-    enableMotors(100, -0.15)
+    enableMotors(30, 0.3)
 
 # se cone na direita
 def coneDIR():
     print('O cone esta na direita')
-    enableMotors(100, 0.15)
+    enableMotors(30, -0.3)
 
 # se cone em frente
-def coneFRE():
+def coneFRE(speed = 60):
     print('O cone esta em frente')
-    enableMotors(100, 0)
+    enableMotors(60, 0)
+    
 
 # liga os LED
 def ligaLED(eixoX):
@@ -48,19 +49,21 @@ def coneCaminho(eixoX):
 def main():
     cap = cv2.VideoCapture(0)
     lastCone = None
+    maiorTodos = None
     while(1):
         cones = procuraCONE(cap)
         
         if (len(cones) == 0):
-            if (lastCone != None):
-                coneCaminho(lastCone['x'] + (lastCone['w']/2))
+            coneFRE()
+            #enableMotors(0,0)
         else:
             maior = cones[0]
             for cone in cones:
                 if (cone['h'] > maior['h']):
                     maior = cone
-            coneCaminho(maior['x'] + (maior['w']/2))
-            lastCone = maior    
+            if (maiorTodos == None or maior['h'] >= maiorTodos * 0.8):
+                coneCaminho(maior['x'] + (maior['w']/2))
+                maiorTodos = maior['h']
     cap.release()
     cv2.destroyAllWindows()
 

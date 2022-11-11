@@ -6,10 +6,10 @@ def procuraCONE(cap):
     if ret == True:
       hsv_img = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-      lower_orange1 = np.array([0, 135, 135])
-      lower_orange2 = np.array([15, 255, 255])
-      upper_orange1 = np.array([159, 135, 80])
-      upper_orange2 = np.array([179, 255, 255])
+      lower_orange1 = np.array([0, 0, 0])
+      lower_orange2 = np.array([45, 255, 255])
+      upper_orange1 = np.array([0, 0, 0])
+      upper_orange2 = np.array([45, 255, 255])
 
       kernel = np.ones((5,5),np.uint8)
       imgThreshLow = cv2.inRange(hsv_img, lower_orange1, lower_orange2)
@@ -18,7 +18,8 @@ def procuraCONE(cap):
       threshed_img = cv2.bitwise_or(imgThreshLow, imgThreshHigh)
 
       threshed_img = cv2.bitwise_and(threshed_img, imgThreshHigh)
-
+ 
+        
       # threshed_img_smooth = cv2.erode(threshed_img, kernel, iterations = 1)
       # threshed_img_smooth = cv2.dilate(threshed_img_smooth, kernel, iterations = 1)
 
@@ -57,6 +58,20 @@ def procuraCONE(cap):
       
 if __name__ == '__main__':
   cap = cv2.VideoCapture(0)
+  
+  cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+  cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+  cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+  cap.set(cv2.CAP_PROP_BRIGHTNESS, -34)
+  cap.set(cv2.CAP_PROP_CONTRAST, 29)
+  cap.set(cv2.CAP_PROP_SATURATION, 128)
+  cap.set(cv2.CAP_PROP_GAIN, 54)
+  cap.set(cv2.CAP_PROP_EXPOSURE, 157)
+  cap.set(cv2.CAP_PROP_SHARPNESS, 3)
+  cap.set(cv2.CAP_PROP_AUTO_WB, 0)
+  cap.set(cv2.CAP_PROP_WB_TEMPERATURE, 4204)
+  cap.set(cv2.CAP_PROP_HUE, 8)
+
   while(1):
     cones = procuraCONE(cap)
     print(cones)

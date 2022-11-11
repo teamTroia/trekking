@@ -1,21 +1,22 @@
 from gyro import readAngularSpeed
 from motor import enablePKS1, enablePKS2
 import time
-BASE_SPEED = 25
+
+BASE_SPEED = 0.25
 MIN_SPEED = 0
 
 def controlMotor(left, right):
   absoluteRight = abs(right)
-  rightSignal = right / absoluteRight
+  rightSignal = 1 if absoluteRight == 0 else right / absoluteRight
 
   absoluteLeft = abs(left)
-  leftSignal = left / absoluteLeft
-
-  enablePKS1((absoluteRight/100) * BASE_SPEED, rightSignal)
-  enablePKS2((absoluteLeft/100) * BASE_SPEED, leftSignal)
+  leftSignal = 1 if absoluteLeft == 0 else left / absoluteLeft
+  print(f"absleft: {left} {absoluteLeft} {leftSignal} absright: {right} {absoluteRight} {rightSignal}")
+  enablePKS1(absoluteRight * BASE_SPEED, rightSignal)
+  enablePKS2(absoluteLeft * BASE_SPEED, leftSignal)
 
 def pid(target, actual):
-  kp = 20
+  kp = 50
   kd = 0
   ki = 0
 
@@ -27,11 +28,11 @@ def pid(target, actual):
 def enableMotors(linear, angular):
   gyro = readAngularSpeed()
   angularSpeed = pid(angular, gyro['z'])
-  print(angularSpeed)
-  angularSpeed = 100 if (angularSpeed > 100) else 100
+  #print(angularSpeed)
+  angularSpeed = 100 if (angularSpeed > 100) else angularSpeed
 
-  leftSpeed = linear - angular
-  rightSpeed = linear + angular
+  leftSpeed = linear - angularSpeed
+  rightSpeed = linear + angularSpeed
 
   leftSpeed = 0 if (abs(leftSpeed) < MIN_SPEED) else leftSpeed
   rightSpeed = 0 if (abs(rightSpeed) < MIN_SPEED) else rightSpeed
@@ -39,5 +40,12 @@ def enableMotors(linear, angular):
   controlMotor(leftSpeed, rightSpeed)
 
 if (__name__ == '__main__'):
-    while(1):
-        enableMotors(100,0)
+    on = True
+    while(on):
+        try:
+            enableMotors(40,0)
+        except KeyboardInterrupt:
+            on = False
+        except:
+            print("engasguei")
+            

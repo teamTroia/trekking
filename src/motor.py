@@ -14,6 +14,7 @@ IN1_PKS2 = 15
 SD2_PKS2 = 35
 IN2_PKS2 = 18
 
+LED_OUT = 22
 
 gpio.setmode(gpio.BOARD)
 gpio.setup(SD1_PKS1,gpio.OUT)
@@ -26,7 +27,9 @@ gpio.setup(IN2_PKS1,gpio.OUT)
 gpio.setup(IN1_PKS2,gpio.OUT)
 gpio.setup(IN2_PKS2,gpio.OUT)
 
+gpio.setup(LED_OUT, gpio.OUT)
 
+gpio.output(LED_OUT, gpio.LOW)
 pwmSD1_PKS1 = gpio.PWM(SD1_PKS1, 500)
 pwmSD2_PKS1 = gpio.PWM(SD2_PKS1, 500)
 pwmSD1_PKS2 = gpio.PWM(SD1_PKS2, 500)
@@ -76,8 +79,21 @@ def enablePKS2(dutyCycle, direction):
     gpio.output(IN1_PKS2, gpio.LOW)
     gpio.output(IN2_PKS2, gpio.LOW)
 
+def blinkLed():
+    gpio.output(LED_OUT, gpio.HIGH)
+    time.sleep(0.5)
+    gpio.output(LED_OUT, gpio.LOW)
+    time.sleep(0.5)
+    gpio.output(LED_OUT, gpio.HIGH)
+    time.sleep(0.5)
+    gpio.output(LED_OUT, gpio.LOW)
+    time.sleep(0.5)
+    gpio.output(LED_OUT, gpio.HIGH)
+    time.sleep(0.5)
+    gpio.output(LED_OUT, gpio.LOW)
+
 if __name__ == '__main__':
   while(1):
-    enablePKS2(30,1)
-    enablePKS1(30,1)
+    enablePKS2(20,-1)
+    enablePKS1(20,-1)
 
