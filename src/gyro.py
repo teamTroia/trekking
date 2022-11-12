@@ -1,5 +1,6 @@
 import smbus2 as smbus
 from time import sleep
+
 DEVICE_BUS = 1
 GYRO_ADDRESS = 0x68
 
@@ -15,7 +16,6 @@ GYRO_SCALE = 65.5
 GYRO_CONSTANT = 0.017453293
 
 i2c = smbus.SMBus(DEVICE_BUS)
-#i2c.pec = 1
 sleep(1)
 
 i2c.write_byte_data(GYRO_ADDRESS, INIT_REGISTER, 0x00)
@@ -45,3 +45,4 @@ if (__name__ == '__main__'):
     while(True):
       gyro = readAngularSpeed()
       print(f"x: {gyro['x']:.6f}, y: {gyro['y']:.6f}, z: {gyro['z']:.6f}")
+      

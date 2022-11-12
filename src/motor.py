@@ -94,6 +94,6 @@ def blinkLed():
 
 if __name__ == '__main__':
   while(1):
-    enablePKS2(20,-1)
-    enablePKS1(20,-1)
+    enablePKS2(20,1)
+    enablePKS1(20,1)
 
