@@ -62,7 +62,7 @@
 3. mkdir -p build && cd build
 
 
-4.cmake ../opencv
+4. cmake ../opencv
 
 
 5. make -j4
