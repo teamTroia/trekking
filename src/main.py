@@ -5,8 +5,6 @@ import cv2
 from visao import procuraCONE
 import serial
 
-
-
 MARGEM_ERRO_CENTRO = 60
 
 # desliga o LED
@@ -15,36 +13,25 @@ def offLED(pino):
     GPIO.output(pino, GPIO.LOW)
 
 # se cone na esquerda
-def coneESQ(eixoX,arduino):
-    print('O cone esta na esquerda')
-    arduino.write(str(-eixoX).encode())
-    
-
-# se cone na direita
-def coneDIR(eixoX,arduino):
-    print('O cone esta na direita')
+def coneSentido(eixoX,arduino):
     arduino.write(str(eixoX).encode())
     
-
-# se cone em frente
-def coneFRE(speed,arduino):
-    print('O cone esta em frente')
-    arduino.write('1'.encode())
-    
-
 # liga os LED
-def ligaLED(eixoX):
-    GPIO.output(eixoX, GPIO.HIGH)
-    offLED(eixoX)
+#def ligaLED(eixoX):
+#    GPIO.output(eixoX, GPIO.HIGH)
+#    offLED(eixoX)
 
 # define onde o cone está
 def coneCaminho(eixoX,arduino):
     if eixoX > 320 + MARGEM_ERRO_CENTRO:
-        coneDIR(eixoX,arduino)
+        print("Direita")
+        coneSentido(eixoX,arduino)
     elif eixoX < 320 - MARGEM_ERRO_CENTRO:
-        coneESQ(eixoX,arduino)
+        print("Esquerda")
+        coneSentido(eixoX,arduino)
     else:
-        coneFRE(eixoX,arduino)
+        print("Frente")
+        coneSentido(eixoX,arduino)
         
     print('EixoX: ')
     print(eixoX)
@@ -82,7 +69,7 @@ if __name__ == '__main__':
     cv2.createTrackbar("Brilho   ", "Configuracao", 0, 255, onTrackBarBrilho)
     cv2.createTrackbar("Saturacao", "Configuracao", 0, 255, onTrackBarSaturacao)
 
-    while(1):
+    while(1): #acertar pelo que esta na nvidia
         print(brilho)
         cones = procuraCONE(cap, brilho, saturacao)
         if (len(cones) == 0):
