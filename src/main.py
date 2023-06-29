@@ -69,20 +69,13 @@ if __name__ == '__main__':
     cv2.createTrackbar("Brilho   ", "Configuracao", 0, 255, onTrackBarBrilho)
     cv2.createTrackbar("Saturacao", "Configuracao", 0, 255, onTrackBarSaturacao)
 
-    while(1): #acertar pelo que esta na nvidia
-        print(brilho)
-        cones = procuraCONE(cap, brilho, saturacao)
-        if (len(cones) == 0):
-            coneFRE(60,arduino)
-            #enableMotors(0,0)
-        else:
-            maior = cones[0]
-            for cone in cones:
-                if (cone['h'] > maior['h']):
-                    maior = cone
-            if (maiorTodos == None or maior['h'] >= maiorTodos * 0.8):
-                coneCaminho(maior['x'] + (maior['w']/2),arduino)
-                maiorTodos = maior['h']
-        print(cones)
-    cap.release()
-    cv2.destroyAllWindows()
+while(1):
+       cones = procuraCONE(cap, brilho, saturacao)
+       if (len(cones) == 0):
+         print("lens")
+           #enableMotors(0,0)
+       else:
+           #maior = cones[0]
+           coneCaminho(cones['x'],arduino)
+   cap.release()
+   cv2.destroyAllWindows()
