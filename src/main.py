@@ -45,37 +45,39 @@ def onTrackBarSaturacao(value):
    saturacao = value
 
 if __name__ == '__main__':
-    brilho = 0
-    saturacao = 0
+   brilho = 0
+   saturacao = 0
 
-    while True:
-        try:  #Tenta se conectar, se conseguir, o loop se encerra
-            arduino = serial.Serial('COM3', 9600)
-            print('Arduino conectado')
-            break
-        except:
-            pass
+   while True:
+       try:  #Tenta se conectar, se conseguir, o loop se encerra
+           arduino = serial.Serial('/dev/ttyACM0', 9600)
+           print('Arduino conectado')
+           break
+       except:
+           print('Não passou')
+           pass
     
-    cap = cv2.VideoCapture(0)
-    
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-    cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+   cap = cv2.VideoCapture(0)
+   
+   cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+   cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+   cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
 
-    lastCone = None
-    maiorTodos = None
+   lastCone = None
+   maiorTodos = None
 
-    cv2.namedWindow("Configuracao")
-    cv2.createTrackbar("Brilho   ", "Configuracao", 0, 255, onTrackBarBrilho)
-    cv2.createTrackbar("Saturacao", "Configuracao", 0, 255, onTrackBarSaturacao)
+   cv2.namedWindow("Configuracao")
+   cv2.createTrackbar("Brilho   ", "Configuracao", 0, 255, onTrackBarBrilho)
+   cv2.createTrackbar("Saturacao", "Configuracao", 0, 255, onTrackBarSaturacao)
 
-while(1):
+   while(1):
        cones = procuraCONE(cap, brilho, saturacao)
        if (len(cones) == 0):
          print("lens")
            #enableMotors(0,0)
        else:
-           #maior = cones[0]
-           coneCaminho(cones['x'],arduino)
+           maior = cones[0]
+           coneCaminho(maior['x'],arduino)
+           print(maior['x'])
    cap.release()
    cv2.destroyAllWindows()
