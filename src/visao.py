@@ -1,10 +1,10 @@
 import cv2
 import numpy as np
+
 def procuraCONE(cap, brilho, saturacao):
   while(cap.isOpened()):
     ret, frame = cap.read()
     if ret == True:
-      print("TO AQUI")
       hsv_img = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
       lower_orange1 = np.array([0, 60, 80])
