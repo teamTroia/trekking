@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 2.8)
-project( visaoC ) 
-SET(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11 -pthread")
-find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
-add_executable( visaoC visaoC.cpp )
-TARGET_LINK_LIBRARIES( visaoC ${OpenCV_LIBS} ${CMAKE_THREAD_LIBS_INIT} )

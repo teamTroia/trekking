@@ -1,3 +1,0 @@
-/home/corcel/trekking/src/CMakeFiles/rebuild_cache.dir
-/home/corcel/trekking/src/CMakeFiles/edit_cache.dir
-/home/corcel/trekking/src/CMakeFiles/visaoC.dir
